@@ -58,13 +58,15 @@ def main():
     # starting to gernerate the json file for the job posted
     jobs_per_page_xpath = "//div[@class='full-width artdeco-entity-lockup__title ember-view']"
     job_titles = driver.find_elements(By.XPATH, jobs_per_page_xpath)
-    scroll_elem = driver.find_element(
-        By.XPATH, "//div[@class='scaffold-layout__list ']")
-    driver.execute_script("arguments[0].scrollIntoView(true);", scroll_elem)
-    time.sleep(10)
-    scroll_elem = driver.find_element(
-        By.XPATH, "//div[@class='scaffold-layout__list ']")
-    driver.execute_script("arguments[0].scrollIntoView(true);", scroll_elem)
+
+    # trying to scroll down the job_list div
+    # scroll_elem = driver.find_element(
+    #     By.XPATH, "//div[@class='scaffold-layout__list ']")
+    # driver.execute_script("arguments[0].scrollIntoView(true);", scroll_elem)
+    # time.sleep(10)
+    # scroll_elem = driver.find_element(
+    #     By.XPATH, "//div[@class='scaffold-layout__list ']")
+    # driver.execute_script("arguments[0].scrollIntoView(true);", scroll_elem)
     time.sleep(10)
     job_title = []
     for elem in job_titles:
@@ -76,18 +78,22 @@ def main():
     job_description = []
     for elem in job_titles:
         elem.click()
+        time.sleep(30)
+        job_info_xpath = "//li[@class='jobs-unified-top-card__job-insight']"
         elem_attr = driver.find_elements(
-            By.XPATH, "//li[@class='jobs-unified-top-card__job-insight']")
-        jty = elem_attr[0].text
-        cs = elem_attr[1].text
-        job_type.append(jty)
-        company_size.append(cs)
-
-        time.sleep(5)
+            By.XPATH, job_info_xpath)
+        counter = 0
+        attr_len = len(elem_attr)
+        for ele in elem_attr:
+            # if counter == 0:
+            print(ele.text)
+            #     counter += 1
+            # if attr_len > 0 and counter == 1:
+            #     company_size.append(ele.text)
 
     print(job_title)
-    print(job_type)
-    print(company_size)
+    # print(job_type)
+    # print(company_size)
 
     # jobs = pd.DataFrame(job_title, columns=['Job_Titles'])
     # print(jobs)
