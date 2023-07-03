@@ -73,31 +73,31 @@ def main():
         job_title.append(elem.text)
         time.sleep(2)
 
-    job_type = []
-    company_size = []
+    compay_info = []
     job_description = []
     for elem in job_titles:
         elem.click()
-        time.sleep(30)
+        time.sleep(10)
         job_info_xpath = "//li[@class='jobs-unified-top-card__job-insight']"
         elem_attr = driver.find_elements(
             By.XPATH, job_info_xpath)
         counter = 0
         attr_len = len(elem_attr)
+        comp_info_temp = []
         for ele in elem_attr:
-            # if counter == 0:
-            print(ele.text)
-            #     counter += 1
-            # if attr_len > 0 and counter == 1:
-            #     company_size.append(ele.text)
+            comp_info_temp.append(ele.text)
+        compay_info.append(comp_info_temp)
+        desc_xpath = "//*[contains(@class,'jobs-box--fadein jobs-box--full-width jobs-box--with-cta-large jobs-description')]"
+        desc = driver.find_element(By.XPATH, desc_xpath)
+        job_description.append(desc.text)
 
-    print(job_title)
-    # print(job_type)
-    # print(company_size)
-
-    # jobs = pd.DataFrame(job_title, columns=['Job_Titles'])
-    # print(jobs)
-    # return jobs
+    jobs = pd.DataFrame({
+        'job_titles': job_title,
+        'company_type': compay_info,
+        'job_description': job_description
+    })
+    print(jobs)
+    jobs.to_csv("Latest_Jobes.csv", index=False)
 
 
 if __name__ == '__main__':
