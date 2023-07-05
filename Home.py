@@ -8,7 +8,7 @@ import re
 st.set_page_config(layout="wide")
 
 # Loading the csv file into the dataframe
-df_main = pd.read_csv("Latest_Jobes.csv")
+df_main = pd.read_csv("Latest_Jobs.csv")
 
 
 def main():
