@@ -10,6 +10,8 @@ st.set_page_config(layout="wide")
 # Loading the csv file into the dataframe
 df_main = pd.read_csv("Latest_Jobs.csv")
 
+# main function
+
 
 def main():
     img = Image.open('banner.jpg')
@@ -58,10 +60,16 @@ def main():
     df_main.drop(['company_type'], axis=1, inplace=True)
 
 
+# job description improving function
+
+
 def job_description():
     jds = df_main.job_description.tolist()
+    # storing key skills and responsibilities in the below list
     responsibilities = []
     skills = []
+
+    # key words used as delimiters
     res_keys = ['Responsibilities', 'Your challenge', 'What you will do:']
     skills_key = ['Qualifications', 'ideal candidate ',
                   'What You’ll Need', 'Skills']
