@@ -48,6 +48,8 @@ def main():
                 company_size.append(cs[0])
                 sector.append(cs[1])
 
+    col_name = ['job_type', 'job_level', 'company_size', 'sector']
+    col_val = [job_type, job_level, company_size, sector]
     df_main['job_type'] = job_type
     df_main['job_level'] = job_level
     df_main['company_size'] = company_size
