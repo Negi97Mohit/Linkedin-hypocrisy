@@ -60,16 +60,21 @@ def main():
 
 def job_description():
     jds = df_main.job_description.tolist()
-    st.write(len(jds))
-    counter1 = 0
-    counter2 = 0
+    responsibilities = []
+    skills = []
+    res_keys = ['Responsibilities', 'Your challenge', 'What you will do:']
+    skills_key = [' Qualifications', ' ideal candidate ',
+                  ' What You’ll Need', ' Skills']
     for jd in jds:
-        if 'Responsibilities' in jd:
-            counter1 += 1
-        if 'Qualifications' in jd:
-            counter2 += 1
-    st.write(counter1)
-    st.write(counter2)
+        for rs in res_keys:
+            for sk in skills_key:
+                if rs in jd and sk in jd:
+                    st.write(rs, sk)
+                    delimiter = rs+sk
+                    jd = jd.split(delimiter)
+        st.write(jd)
+    st.write(skills)
+    st.write(responsibilities)
 
 
 if __name__ == '__main__':
