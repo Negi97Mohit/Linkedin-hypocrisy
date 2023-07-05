@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from PIL import Image
 import numpy as np
+import re
 
 st.set_page_config(layout="wide")
 
@@ -55,7 +56,6 @@ def main():
     df_main['company_size'] = company_size
     df_main['sector'] = sector
     df_main.drop(['company_type'], axis=1, inplace=True)
-    st.write(df_main)
 
 
 def job_description():
@@ -63,18 +63,22 @@ def job_description():
     responsibilities = []
     skills = []
     res_keys = ['Responsibilities', 'Your challenge', 'What you will do:']
-    skills_key = [' Qualifications', ' ideal candidate ',
-                  ' What You’ll Need', ' Skills']
+    skills_key = ['Qualifications', 'ideal candidate ',
+                  'What You’ll Need', 'Skills']
     for jd in jds:
+        status = False
         for rs in res_keys:
             for sk in skills_key:
-                if rs in jd and sk in jd:
-                    st.write(rs, sk)
-                    delimiter = rs+sk
-                    jd = jd.split(delimiter)
-        st.write(jd)
-    st.write(skills)
-    st.write(responsibilities)
+                if status == False:
+                    if rs in jd and sk in jd:
+                        splited = re.split(rs+'|'+sk, jd)
+                        responsibilities.append(splited[1])
+                        skills.append(splited[2])
+                        status = True
+    df_main['skills'] = skills
+    df_main['responsibilities'] = responsibilities
+    df_main.drop(['job_description'], axis=1, inplace=True)
+    st.write(df_main)
 
 
 if __name__ == '__main__':
