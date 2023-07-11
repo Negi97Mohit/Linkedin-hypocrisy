@@ -1,5 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+
 from bs4 import BeautifulSoup
 import time
 from selenium.webdriver.common.keys import Keys
@@ -55,18 +60,12 @@ def main():
     html.send_keys(Keys.END)
     time.sleep(10)
 
+    ActionChains(driver).move_to_element(
+        driver.sl.find_element_by_class('scaffold-layout__list')).perform()
     # starting to gernerate the json file for the job posted
     jobs_per_page_xpath = "//div[@class='full-width artdeco-entity-lockup__title ember-view']"
     job_titles = driver.find_elements(By.XPATH, jobs_per_page_xpath)
-
-    # trying to scroll down the job_list div
-    # scroll_elem = driver.find_element(
-    #     By.XPATH, "//div[@class='scaffold-layout__list ']")
-    # driver.execute_script("arguments[0].scrollIntoView(true);", scroll_elem)
-    # time.sleep(10)
-    # scroll_elem = driver.find_element(
-    #     By.XPATH, "//div[@class='scaffold-layout__list ']")
-    # driver.execute_script("arguments[0].scrollIntoView(true);", scroll_elem)
+    print(len(job_titles))
     time.sleep(10)
     job_title = []
     for elem in job_titles:
@@ -97,7 +96,8 @@ def main():
         'job_description': job_description
     })
     print(jobs)
-    jobs.to_csv("Latest_Jobes.csv", index=False)
+    jobs.to_csv("Latest_Jobes.csv", index=False)\
+
 
 
 if __name__ == '__main__':
