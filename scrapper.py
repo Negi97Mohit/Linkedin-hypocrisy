@@ -61,16 +61,26 @@ def main():
     time.sleep(10)
 
     ActionChains(driver).move_to_element(
-        driver.sl.find_element_by_class('scaffold-layout__list')).perform()
+        driver.find_element(By.XPATH, '//div[@class="scaffold-layout__list "]')).perform()
+
+    driver.set_page_load_timeout(20)
+
     # starting to gernerate the json file for the job posted
     jobs_per_page_xpath = "//div[@class='full-width artdeco-entity-lockup__title ember-view']"
-    job_titles = driver.find_elements(By.XPATH, jobs_per_page_xpath)
+    job_titles = set()
+
+    for i in range(8):
+        job_title_temp = driver.find_elements(By.XPATH, jobs_per_page_xpath)
+        for jd in job_title_temp:
+            job_titles.add(jd)
+
     print(len(job_titles))
     time.sleep(10)
     job_title = []
     for elem in job_titles:
         job_title.append(elem.text)
         time.sleep(2)
+    print(job_title)
 
     compay_info = []
     job_description = []
