@@ -96,8 +96,9 @@ def job_description():
     df_main.drop(['job_description'], axis=1, inplace=True)
 
     # Display the DataFrame with improved job descriptions
-    st.write(df_main)
-    get_csize(df_main)
+    df = get_csize(df_main)
+    st.write(df)
+    get_type(df)
 
 
 def get_csize(df_main):
@@ -107,7 +108,6 @@ def get_csize(df_main):
     counter = 0
     for val in curr_val:
         val = re.sub("[,]", "", val)
-        st.write(val)
         # getting numbers from string
         temp = re.findall(r'\d+', val)
         res = list(map(int, temp))
@@ -115,10 +115,32 @@ def get_csize(df_main):
         if len(res) != 1:
             df_main['Max Employee'][counter] = res[1]
         else:
-            df_main['Max Employee'][counter] = np.nan
+            df_main['Max Employee'][counter] = res[0]
 
         counter += 1
     df_main.drop(['company_size'], inplace=True, axis=1)
+    return df_main
+
+
+def get_type(df_main):
+    df_main['Job Type'] = ''
+    df_main['Job Level'] = ""
+    curr_val = df_main['job_type'].tolist()
+    counter = 0
+    for val in curr_val:
+        val_list = val.split("·")
+        st.write(val_list)
+        for val in val_list:
+            if "time" in val:
+                val = re.sub("'", "", val)
+                df_main['Job Type'][counter] = val
+                counter += 1
+            if "level" in val:
+                val = re.sub("'", "", val)
+                df_main['Job Level'][counter] = val
+            else:
+                df_main['Job Level'][counter] = "Not in JD"
+
     st.write(df_main)
 
 
