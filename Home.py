@@ -97,6 +97,29 @@ def job_description():
 
     # Display the DataFrame with improved job descriptions
     st.write(df_main)
+    get_csize(df_main)
+
+
+def get_csize(df_main):
+    df_main['Min Employee'] = ''
+    df_main['Max Employee'] = ''
+    curr_val = df_main['company_size'].tolist()
+    counter = 0
+    for val in curr_val:
+        val = re.sub("[,]", "", val)
+        st.write(val)
+        # getting numbers from string
+        temp = re.findall(r'\d+', val)
+        res = list(map(int, temp))
+        df_main['Min Employee'][counter] = res[0]
+        if len(res) != 1:
+            df_main['Max Employee'][counter] = res[1]
+        else:
+            df_main['Max Employee'][counter] = np.nan
+
+        counter += 1
+    df_main.drop(['company_size'], inplace=True, axis=1)
+    st.write(df_main)
 
 
 if __name__ == '__main__':
