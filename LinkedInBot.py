@@ -81,25 +81,6 @@ class LinkedInBot:
             logging.info("Clicked on job_list_item")
         except Exception as e:
             logging.error(f"Failed to click on job_list_item: {e}")
-            
-    # def get_position_data(self, job):
-    #     """Gets the position data for a posting.
-    #     Parameters
-    #     ----------
-    #     job : Selenium webelement
-    #     Returns
-    #     -------
-    #     list of strings : [position, company, location, details]
-    #     """
-    #     job_info = job.text.split('\n')
-    #     if len(job_info) >= 3:
-    #         position, company, location = job_info[:3]
-    #     else:
-    #         logging.warning("Incomplete job information, skipping...")
-    #         return None
-
-    #     details = self.driver.find_element(By.ID, "job-details").text
-    #     return [position, company, location, details]
 
     def get_position_data(self, job):
         """Gets the position data for a posting.
@@ -214,46 +195,6 @@ class LinkedInBot:
         logging.info("Done scraping.")
         logging.info("Closing DB connection.")
         self.close_session()
-
-    # def run(self, email, password, keywords, location):
-    #     if os.path.exists("data/cookies.txt"):
-    #         self.driver.get("https://www.linkedin.com/")
-    #         self.load_cookie("data/cookies.txt")
-    #         self.driver.get("https://www.linkedin.com/")
-    #     else:
-    #         self.login(email=email, password=password)
-    #         self.save_cookie("data/cookies.txt")
-
-    #     logging.info("Begin LinkedIn keyword search")
-    #     self.search_linkedin(keywords, location)
-    #     self.wait()
-
-    #     # Open the CSV file for writing
-    #     with open("data/data.csv", "w", newline="", encoding="utf-8") as csvfile:
-    #         writer = csv.writer(csvfile)
-    #         writer.writerow(["Position", "Company", "Location", "Description"])
-
-    #         # Scrape pages, only do first 8 pages since after that the data isn't well suited for me anyways
-    #         for page in range(2, 8):
-    #             # Get the jobs list items to scroll through
-    #             jobs = self.driver.find_elements(By.CLASS_NAME, "occludable-update")
-    #             for job in jobs:
-    #                 job_data = self.get_position_data(job)
-    #                 if job_data:
-    #                     [position, company, location, description] = job_data
-    #                     # Write the job details to the CSV file
-    #                     writer.writerow([position, company, location, description])
-
-    #             # Go to next page
-    #             next_button_xpath = f"//button[@aria-label='Page {page}']"
-    #             next_button = self.driver.find_element(By.XPATH, next_button_xpath)
-    #             next_button.click()
-    #             self.wait()
-
-    #     logging.info("Done scraping.")
-    #     logging.info("Closing DB connection.")
-    #     self.close_session()
-
 
 if __name__ == "__main__":
     email = "negi.m@northeastern.edu"
