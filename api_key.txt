@@ -1,0 +1,8 @@
+open ai api key:
+"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"
+Client ID
+595141379598-c24m9vpfii9q7pgqpn71oj35g1eqmrqq.apps.googleusercontent.com
+Client secret
+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
+Creation date
+7 February 2024 at 10:48:07 GMT-5
