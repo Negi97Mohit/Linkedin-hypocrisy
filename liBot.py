@@ -227,7 +227,7 @@ class LinkedInBot:
 def main():
     st. set_page_config(layout="wide") 
     st.title("LinkedIn Job Analysis")
-    col1, col2 = st.columns([3, 1])
+    col1, col2 = st.columns([1, 1])
     with col1:
         # Scrape LinkedIn Jobs
         st.header("Scrape LinkedIn Jobs")
@@ -242,98 +242,98 @@ def main():
             bot = LinkedInBot()
             bot.run(email, password, keywords, location)
             st.success("Job scraping completed!")
+        with st.expander("See Scraper Code"):
+            code = '''class LinkedInBot:
+        def __init__(self, delay=5):
+            if not os.path.exists("data"):
+                os.makedirs("data")
+            log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            logging.basicConfig(level=logging.INFO, format=log_fmt)
+            self.delay=delay
+            logging.info("Starting driver")
+            self.driver = webdriver.Chrome()
 
-        code = '''class LinkedInBot:
-    def __init__(self, delay=5):
-        if not os.path.exists("data"):
-            os.makedirs("data")
-        log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        logging.basicConfig(level=logging.INFO, format=log_fmt)
-        self.delay=delay
-        logging.info("Starting driver")
-        self.driver = webdriver.Chrome()
-
-    def login(self, email, password):
-        """Go to linkedin and login"""
-        # go to linkedin:
-        logging.info("Logging in")
-        self.driver.maximize_window()
-        self.driver.get('https://www.linkedin.com/login')
-        time.sleep(self.delay)
-
-        self.driver.find_element(By.ID,'username').send_keys(email)
-        self.driver.find_element(By.ID,'password').send_keys(password)
-
-        self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
-        time.sleep(self.delay)
-
-    def save_cookie(self, path):
-        with open(path, 'wb') as filehandler:
-            pickle.dump(self.driver.get_cookies(), filehandler)
-
-    def load_cookie(self, path):
-        with open(path, 'rb') as cookiesfile:
-            cookies = pickle.load(cookiesfile)
-            for cookie in cookies:
-                self.driver.add_cookie(cookie)
-
-    def search_linkedin(self, keywords, location):
-        """Enter keywords into search bar
-        """
-        logging.info("Searching jobs page")
-        self.driver.get("https://www.linkedin.com/jobs/")
-        # search based on keywords and location and hit enter
-        self.driver.get(
-        f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}"
-        )
-        logging.info("Keyword search successful")
-        time.sleep(self.delay)
-    
-    def wait(self, t_delay=None):
-        """Just easier to build this in here.
-        Parameters
-        ----------
-        t_delay [optional] : int
-            seconds to wait.
-        """
-        delay = self.delay if t_delay == None else t_delay
-        time.sleep(delay)
-
-    def scroll_to(self, job_list_item):
-        """Scroll to the list item in the column and click on it."""
-        try:
-            # Scroll to the element
-            self.driver.execute_script("arguments[0].scrollIntoView();", job_list_item)
-            job_list_item.click()
+        def login(self, email, password):
+            """Go to linkedin and login"""
+            # go to linkedin:
+            logging.info("Logging in")
+            self.driver.maximize_window()
+            self.driver.get('https://www.linkedin.com/login')
             time.sleep(self.delay)
-            logging.info("Clicked on job_list_item")
-        except Exception as e:
-            logging.error(f"Failed to click on job_list_item: {e}")
 
-    def get_position_data(self, job):
-        """Gets the position data for a posting.
-        Parameters
-        ----------
-        job : Selenium webelement
-        Returns
-        -------
-        list of strings : [position, company, company_size, position_level, location, description, salary]
-        """
-        job_info = job.text.split('\n')
-        if len(job_info) < 3:
-            logging.warning("Incomplete job information, skipping...")
-            return None
+            self.driver.find_element(By.ID,'username').send_keys(email)
+            self.driver.find_element(By.ID,'password').send_keys(password)
 
-        position, company, *details = job_info
-        location = details[0] if details else None
-        description = self.get_job_description(job)
+            self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
+            time.sleep(self.delay)
 
-        # Extract additional details if available
-        company_size, position_level, salary = self.extract_additional_details(job)
+        def save_cookie(self, path):
+            with open(path, 'wb') as filehandler:
+                pickle.dump(self.driver.get_cookies(), filehandler)
 
-        return [position, company, location, description, company_size, position_level, salary]
-'''
-        st.code(code, language='python')
+        def load_cookie(self, path):
+            with open(path, 'rb') as cookiesfile:
+                cookies = pickle.load(cookiesfile)
+                for cookie in cookies:
+                    self.driver.add_cookie(cookie)
+
+        def search_linkedin(self, keywords, location):
+            """Enter keywords into search bar
+            """
+            logging.info("Searching jobs page")
+            self.driver.get("https://www.linkedin.com/jobs/")
+            # search based on keywords and location and hit enter
+            self.driver.get(
+            f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}"
+            )
+            logging.info("Keyword search successful")
+            time.sleep(self.delay)
+        
+        def wait(self, t_delay=None):
+            """Just easier to build this in here.
+            Parameters
+            ----------
+            t_delay [optional] : int
+                seconds to wait.
+            """
+            delay = self.delay if t_delay == None else t_delay
+            time.sleep(delay)
+
+        def scroll_to(self, job_list_item):
+            """Scroll to the list item in the column and click on it."""
+            try:
+                # Scroll to the element
+                self.driver.execute_script("arguments[0].scrollIntoView();", job_list_item)
+                job_list_item.click()
+                time.sleep(self.delay)
+                logging.info("Clicked on job_list_item")
+            except Exception as e:
+                logging.error(f"Failed to click on job_list_item: {e}")
+
+        def get_position_data(self, job):
+            """Gets the position data for a posting.
+            Parameters
+            ----------
+            job : Selenium webelement
+            Returns
+            -------
+            list of strings : [position, company, company_size, position_level, location, description, salary]
+            """
+            job_info = job.text.split('\n')
+            if len(job_info) < 3:
+                logging.warning("Incomplete job information, skipping...")
+                return None
+
+            position, company, *details = job_info
+            location = details[0] if details else None
+            description = self.get_job_description(job)
+
+            # Extract additional details if available
+            company_size, position_level, salary = self.extract_additional_details(job)
+
+            return [position, company, location, description, company_size, position_level, salary]
+    '''
+            st.code(code, language='python')
     with col2:
         # Load the CSV data
         st.header("Job Data")

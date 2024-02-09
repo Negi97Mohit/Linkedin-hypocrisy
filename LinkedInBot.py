@@ -1,3 +1,4 @@
+# Importing necessary libraries
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -14,65 +15,62 @@ import pickle
 import os
 import csv
 
-
 class LinkedInBot:
     def __init__(self, delay=5):
+        # Creating 'data' directory if not exists
         if not os.path.exists("data"):
             os.makedirs("data")
+        # Configuring logging
         log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         logging.basicConfig(level=logging.INFO, format=log_fmt)
-        self.delay=delay
+        self.delay = delay
         logging.info("Starting driver")
         self.driver = webdriver.Chrome()
 
     def login(self, email, password):
-        """Go to linkedin and login"""
-        # go to linkedin:
+        """Log into LinkedIn."""
+        # Maximizing window and navigating to LinkedIn login page
         logging.info("Logging in")
         self.driver.maximize_window()
         self.driver.get('https://www.linkedin.com/login')
         time.sleep(self.delay)
 
-        self.driver.find_element(By.ID,'username').send_keys(email)
-        self.driver.find_element(By.ID,'password').send_keys(password)
-
+        # Entering login credentials and submitting
+        self.driver.find_element(By.ID, 'username').send_keys(email)
+        self.driver.find_element(By.ID, 'password').send_keys(password)
         self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
         time.sleep(self.delay)
 
     def save_cookie(self, path):
+        """Save browser cookies to a file."""
         with open(path, 'wb') as filehandler:
             pickle.dump(self.driver.get_cookies(), filehandler)
 
     def load_cookie(self, path):
+        """Load browser cookies from a file."""
         with open(path, 'rb') as cookiesfile:
             cookies = pickle.load(cookiesfile)
             for cookie in cookies:
                 self.driver.add_cookie(cookie)
 
     def search_linkedin(self, keywords, location):
-        """Enter keywords into search bar
-        """
+        """Search for jobs on LinkedIn based on keywords and location."""
         logging.info("Searching jobs page")
         self.driver.get("https://www.linkedin.com/jobs/")
-        # search based on keywords and location and hit enter
+        # Enter keywords and location into search bar
         self.driver.get(
-        f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}"
+            f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}"
         )
         logging.info("Keyword search successful")
         time.sleep(self.delay)
     
     def wait(self, t_delay=None):
-        """Just easier to build this in here.
-        Parameters
-        ----------
-        t_delay [optional] : int
-            seconds to wait.
-        """
+        """Wait for a specified delay."""
         delay = self.delay if t_delay == None else t_delay
         time.sleep(delay)
 
     def scroll_to(self, job_list_item):
-        """Scroll to the list item in the column and click on it."""
+        """Scroll to a job list item."""
         try:
             # Scroll to the element
             self.driver.execute_script("arguments[0].scrollIntoView();", job_list_item)
@@ -83,14 +81,7 @@ class LinkedInBot:
             logging.error(f"Failed to click on job_list_item: {e}")
 
     def get_position_data(self, job):
-        """Gets the position data for a posting.
-        Parameters
-        ----------
-        job : Selenium webelement
-        Returns
-        -------
-        list of strings : [position, company, company_size, position_level, location, description, salary]
-        """
+        """Extract position data from a job listing."""
         job_info = job.text.split('\n')
         if len(job_info) < 3:
             logging.warning("Incomplete job information, skipping...")
@@ -105,9 +96,8 @@ class LinkedInBot:
 
         return [position, company, location, description, company_size, position_level, salary]
 
-
     def extract_additional_details(self, job):
-        """Extracts additional details like company size, position level, and salary if available."""
+        """Extract additional details like company size, position level, and salary."""
         company_size = None
         position_level = None
         salary = None
@@ -132,7 +122,7 @@ class LinkedInBot:
         return company_size, position_level, salary
 
     def get_job_description(self, job):
-        """Gets the job description."""
+        """Get the job description."""
         # Click on the job to view its details
         self.scroll_to(job)
         
@@ -145,6 +135,7 @@ class LinkedInBot:
         return description
 
     def wait_for_element_ready(self, by, text):
+        """Wait for an element to be ready."""
         try:
             WebDriverWait(self.driver, self.delay).until(EC.presence_of_element_located((by, text)))
         except TimeoutException:
@@ -152,7 +143,7 @@ class LinkedInBot:
             pass
 
     def close_session(self):
-        """This function closes the actual session"""
+        """Close the Selenium session."""
         logging.info("Closing session")
         self.driver.close()
 
@@ -197,7 +188,9 @@ class LinkedInBot:
         self.close_session()
 
 if __name__ == "__main__":
+    # Define login credentials
     email = "negi.m@northeastern.edu"
     password = "Lonely123)"
+    # Instantiate and run the LinkedInBot
     bot = LinkedInBot()
     bot.run(email, password, "Data Analyst", "New York")
