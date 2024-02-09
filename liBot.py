@@ -213,7 +213,8 @@ def main():
         for paragraph in docx.paragraphs:
             text += paragraph.text + "\n"
         st.write("File contents:")
-        st.write(text)
+        with st.expander("See Resume"):
+            st.write(text)
 
     col1, col2 = st.columns([1, 1])
     with col1:
