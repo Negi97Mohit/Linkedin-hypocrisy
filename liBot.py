@@ -21,7 +21,6 @@ import pickle
 
 class LinkedInBot:
     def __init__(self, delay=5):
-        
         if not os.path.exists("data"):
             os.makedirs("data")
         log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -31,15 +30,14 @@ class LinkedInBot:
         self.driver = webdriver.Chrome()
 
     def login(self, email, password):
-        """Go to linkedin and login"""
-        # go to linkedin:
+        """Go to LinkedIn and login"""
         logging.info("Logging in")
         self.driver.maximize_window()
         self.driver.get('https://www.linkedin.com/login')
         time.sleep(self.delay)
 
-        self.driver.find_element(By.ID,'username').send_keys(email)
-        self.driver.find_element(By.ID,'password').send_keys(password)
+        self.driver.find_element(By.ID, 'username').send_keys(email)
+        self.driver.find_element(By.ID, 'password').send_keys(password)
 
         self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
         time.sleep(self.delay)
@@ -55,25 +53,17 @@ class LinkedInBot:
                 self.driver.add_cookie(cookie)
 
     def search_linkedin(self, keywords, location):
-        """Enter keywords into search bar
-        """
+        """Enter keywords into the search bar"""
         logging.info("Searching jobs page")
         self.driver.get("https://www.linkedin.com/jobs/")
-        # search based on keywords and location and hit enter
-        self.driver.get(
-        f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}"
-        )
+        # Search based on keywords and location and hit enter
+        self.driver.get(f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}")
         logging.info("Keyword search successful")
         time.sleep(self.delay)
     
     def wait(self, t_delay=None):
-        """Just easier to build this in here.
-        Parameters
-        ----------
-        t_delay [optional] : int
-            seconds to wait.
-        """
-        delay = self.delay if t_delay == None else t_delay
+        """Just easier to build this in here."""
+        delay = self.delay if t_delay is None else t_delay
         time.sleep(delay)
 
     def scroll_to(self, job_list_item):
@@ -88,14 +78,7 @@ class LinkedInBot:
             logging.error(f"Failed to click on job_list_item: {e}")
             
     def get_position_data(self, job):
-        """Gets the position data for a posting.
-        Parameters
-        ----------
-        job : Selenium webelement
-        Returns
-        -------
-        list of strings : [position, company, company_size, position_level, location, description, salary, application_link]
-        """
+        """Gets the position data for a posting."""
         job_info = job.text.split('\n')
         if len(job_info) < 3:
             logging.warning("Incomplete job information, skipping...")
@@ -167,7 +150,7 @@ class LinkedInBot:
             pass
 
     def close_session(self):
-        """This function closes the actual session"""
+        """Close the actual session"""
         logging.info("Closing session")
         self.driver.close()
 
@@ -185,11 +168,12 @@ class LinkedInBot:
         self.wait()
 
         # Open the CSV file for writing
-        with open("data/data.csv", "w", newline="", encoding="utf-8") as csvfile:
+        csv_file_path = os.path.join("data", "data.csv")
+        with open(csv_file_path, "w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(["Position", "Company", "Location", "Description", "Company Size", "Position Level", "Salary", "Application Link"])
 
-            # Scrape pages, only do first 8 pages since after that the data isn't well suited for me anyways
+            # Scrape pages
             for page in range(2, 4):
                 # Get the jobs list items to scroll through
                 jobs = self.driver.find_elements(By.CLASS_NAME, "occludable-update")
@@ -213,7 +197,7 @@ class LinkedInBot:
 
 
 def main():
-    st. set_page_config(layout="wide") 
+    st.set_page_config(layout="wide") 
     st.title("LinkedIn Job Analysis")
 
     st.subheader('Upload your resume')
@@ -255,15 +239,14 @@ def main():
             self.driver = webdriver.Chrome()
 
         def login(self, email, password):
-            """Go to linkedin and login"""
-            # go to linkedin:
+            """Go to LinkedIn and login"""
             logging.info("Logging in")
             self.driver.maximize_window()
             self.driver.get('https://www.linkedin.com/login')
             time.sleep(self.delay)
 
-            self.driver.find_element(By.ID,'username').send_keys(email)
-            self.driver.find_element(By.ID,'password').send_keys(password)
+            self.driver.find_element(By.ID, 'username').send_keys(email)
+            self.driver.find_element(By.ID, 'password').send_keys(password)
 
             self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
             time.sleep(self.delay)
@@ -279,25 +262,17 @@ def main():
                     self.driver.add_cookie(cookie)
 
         def search_linkedin(self, keywords, location):
-            """Enter keywords into search bar
-            """
+            """Enter keywords into the search bar"""
             logging.info("Searching jobs page")
             self.driver.get("https://www.linkedin.com/jobs/")
-            # search based on keywords and location and hit enter
-            self.driver.get(
-            f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}"
-            )
+            # Search based on keywords and location and hit enter
+            self.driver.get(f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}")
             logging.info("Keyword search successful")
             time.sleep(self.delay)
         
         def wait(self, t_delay=None):
-            """Just easier to build this in here.
-            Parameters
-            ----------
-            t_delay [optional] : int
-                seconds to wait.
-            """
-            delay = self.delay if t_delay == None else t_delay
+            """Just easier to build this in here."""
+            delay = self.delay if t_delay is None else t_delay
             time.sleep(delay)
 
         def scroll_to(self, job_list_item):
@@ -312,14 +287,7 @@ def main():
                 logging.error(f"Failed to click on job_list_item: {e}")
 
         def get_position_data(self, job):
-            """Gets the position data for a posting.
-            Parameters
-            ----------
-            job : Selenium webelement
-            Returns
-            -------
-            list of strings : [position, company, company_size, position_level, location, description, salary, application_link]
-            """
+            """Gets the position data for a posting."""
             job_info = job.text.split('\n')
             if len(job_info) < 3:
                 logging.warning("Incomplete job information, skipping...")
