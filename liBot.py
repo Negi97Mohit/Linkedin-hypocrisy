@@ -1,31 +1,3 @@
-# import streamlit as st
-# import pandas as pd
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-
-# def main():
-#     st.title("LinkedIn Job Analysis")
-
-#     # Load the CSV data
-#     df = pd.read_csv("data/data.csv")
-
-#     # Perform EDA
-#     st.header("Exploratory Data Analysis")
-
-#     # Count of Positions
-#     st.subheader("Count of Positions")
-#     position_counts = df["Position"].value_counts()
-#     fig_position_counts, ax = plt.subplots()
-#     sns.barplot(x=position_counts.index, y=position_counts.values, ax=ax)
-#     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
-#     ax.set_xlabel("Position")
-#     ax.set_ylabel("Count")
-#     ax.set_title("Count of Positions")
-#     st.pyplot(fig_position_counts)
-
-# if __name__ == "__main__":
-#     main()
-
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -41,6 +13,8 @@ import time
 import logging
 import os
 import csv
+import pandas as pd
+import plotly.express as px
 
 class LinkedInBot:
     def __init__(self, delay=5):
@@ -335,24 +309,23 @@ def main():
     '''
             st.code(code, language='python')
     with col2:
-        # Load the CSV data
-        st.header("Job Data")
         df = pd.read_csv("data/data.csv")
-        st.write(df)
 
         # Perform EDA
         st.header("Exploratory Data Analysis")
 
         # Count of Positions
         st.subheader("Count of Positions")
-        position_counts = df["Position"].value_counts()
-        fig_position_counts, ax = plt.subplots()
-        sns.barplot(x=position_counts.index, y=position_counts.values, ax=ax)
-        ax.set_xticklabels(ax.get_xticklabels(), rotation=45, horizontalalignment='right')
-        ax.set_xlabel("Position")
-        ax.set_ylabel("Count")
-        ax.set_title("Count of Positions")
-        st.pyplot(fig_position_counts)
+
+        # Count positions
+        position_counts = df["Position"].value_counts().reset_index()
+        position_counts.columns = ['Position', 'Count']
+
+        # Create bar plot using Plotly
+        fig = px.bar(position_counts, x='Position', y='Count', title='Count of Positions')
+        fig.update_xaxes(tickangle=45)
+        fig.update_layout(xaxis_title='Position', yaxis_title='Count')
+        st.plotly_chart(fig)
 
 if __name__ == "__main__":
     main()
