@@ -1,4 +1,6 @@
 import streamlit as st
+from docx import Document
+from io import StringIO
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -201,6 +203,18 @@ class LinkedInBot:
 def main():
     st. set_page_config(layout="wide") 
     st.title("LinkedIn Job Analysis")
+
+    st.subheader('Upload your resume')
+
+    uploaded_file = st.file_uploader("Choose a DOCX file", type="docx")
+    if uploaded_file:
+        docx = Document(uploaded_file)
+        text = ""
+        for paragraph in docx.paragraphs:
+            text += paragraph.text + "\n"
+        st.write("File contents:")
+        st.write(text)
+
     col1, col2 = st.columns([1, 1])
     with col1:
         # Scrape LinkedIn Jobs
