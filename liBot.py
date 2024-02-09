@@ -17,6 +17,7 @@ import os
 import csv
 import pandas as pd
 import plotly.express as px
+import pickle 
 
 class LinkedInBot:
     def __init__(self, delay=5):
@@ -93,7 +94,7 @@ class LinkedInBot:
         job : Selenium webelement
         Returns
         -------
-        list of strings : [position, company, company_size, position_level, location, description, salary]
+        list of strings : [position, company, company_size, position_level, location, description, salary, application_link]
         """
         job_info = job.text.split('\n')
         if len(job_info) < 3:
@@ -103,11 +104,12 @@ class LinkedInBot:
         position, company, *details = job_info
         location = details[0] if details else None
         description = self.get_job_description(job)
+        application_link = self.get_application_link(job)
 
         # Extract additional details if available
         company_size, position_level, salary = self.extract_additional_details(job)
 
-        return [position, company, location, description, company_size, position_level, salary]
+        return [position, company, location, description, company_size, position_level, salary, application_link]
 
     def extract_additional_details(self, job):
         """Extracts additional details like company size, position level, and salary if available."""
@@ -147,6 +149,16 @@ class LinkedInBot:
 
         return description
 
+    def get_application_link(self, job):
+        """Gets the job application link."""
+        try:
+            application_link_element = job.find_element(By.CLASS_NAME, "job-card-search__apply-button-container").find_element(By.TAG_NAME, "a")
+            application_link = application_link_element.get_attribute("href")
+        except NoSuchElementException:
+            application_link = None
+
+        return application_link
+
     def wait_for_element_ready(self, by, text):
         try:
             WebDriverWait(self.driver, self.delay).until(EC.presence_of_element_located((by, text)))
@@ -175,7 +187,7 @@ class LinkedInBot:
         # Open the CSV file for writing
         with open("data/data.csv", "w", newline="", encoding="utf-8") as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(["Position", "Company", "Location", "Description", "Company Size", "Position Level", "Salary"])
+            writer.writerow(["Position", "Company", "Location", "Description", "Company Size", "Position Level", "Salary", "Application Link"])
 
             # Scrape pages, only do first 8 pages since after that the data isn't well suited for me anyways
             for page in range(2, 4):
@@ -185,9 +197,9 @@ class LinkedInBot:
                     job_data = self.get_position_data(job)
                     if job_data:
                         # Unpack job_data into variables
-                        position, company, location, description, company_size, position_level, salary = job_data
+                        position, company, location, description, company_size, position_level, salary, application_link = job_data
                         # Write the job details to the CSV file
-                        writer.writerow([position, company, location, description, company_size, position_level, salary])
+                        writer.writerow([position, company, location, description, company_size, position_level, salary, application_link])
 
                 # Go to next page
                 next_button_xpath = f"//button[@aria-label='Page {page}']"
@@ -306,7 +318,7 @@ def main():
             job : Selenium webelement
             Returns
             -------
-            list of strings : [position, company, company_size, position_level, location, description, salary]
+            list of strings : [position, company, company_size, position_level, location, description, salary, application_link]
             """
             job_info = job.text.split('\n')
             if len(job_info) < 3:
@@ -316,11 +328,12 @@ def main():
             position, company, *details = job_info
             location = details[0] if details else None
             description = self.get_job_description(job)
+            application_link = self.get_application_link(job)
 
             # Extract additional details if available
             company_size, position_level, salary = self.extract_additional_details(job)
 
-            return [position, company, location, description, company_size, position_level, salary]
+            return [position, company, location, description, company_size, position_level, salary, application_link]
     '''
             st.code(code, language='python')
     with col2:
