@@ -6,3 +6,4 @@ selenium==4.0.0
 plotly==5.3.1
 python-docx==0.8.11
 scikit-learn==0.24.2
+webdriver-manager==3.4.2
