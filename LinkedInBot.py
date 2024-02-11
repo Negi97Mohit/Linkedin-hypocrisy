@@ -194,3 +194,5 @@ if __name__ == "__main__":
     # Instantiate and run the LinkedInBot
     bot = LinkedInBot()
     bot.run(email, password, "Data Analyst", "New York")
+
+
