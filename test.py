@@ -20,6 +20,7 @@ import plotly.express as px
 import pickle
 
 
+
 class LinkedInBot:
     def __init__(self, delay=5):
         if not os.path.exists("data"):
@@ -28,7 +29,8 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        self.driver = webdriver.Edge()
+        self.driver = webdriver.Edge(executable_path='chromedriver.exe')
+
 
     def login(self, email, password):
         """Go to LinkedIn and login"""
@@ -320,11 +322,10 @@ def main():
         docx = Document(uploaded_file)
         resume_text = ""
         for paragraph in docx.paragraphs:
-            text += paragraph.text + "\n"
+            resume_text += paragraph.resume_text + "\n"
         st.write("File contents:")
         with st.expander("See Resume"):
             st.write(resume_text)
-
     if st.button("Similarity Check"):
             df = pd.read_csv("data/data.csv")
 
