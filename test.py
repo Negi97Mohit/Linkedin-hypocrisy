@@ -13,7 +13,6 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from webdriver_manager.microsoft import EdgeDriverManager
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 import time
 import logging
@@ -30,9 +29,7 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        self.driver = webdriver.Edge(EdgeDriverManager().install())
-
-
+        self.driver = webdriver.Edge()
 
     def login(self, email, password):
         """Go to LinkedIn and login"""
