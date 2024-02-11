@@ -13,7 +13,7 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import EdgeDriverManager
+from webdriver_manager.microsoft import EdgeDriverManager
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 import time
 import logging
