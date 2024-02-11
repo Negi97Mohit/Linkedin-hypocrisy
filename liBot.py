@@ -2,6 +2,8 @@ import streamlit as st
 from docx import Document
 from io import StringIO
 import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import matplotlib.pyplot as plt
 import seaborn as sns
 from selenium import webdriver
@@ -318,13 +320,28 @@ def main():
     uploaded_file = st.file_uploader("Choose a DOCX file", type="docx")
     if uploaded_file:
         docx = Document(uploaded_file)
-        text = ""
+        resume_text = ""
         for paragraph in docx.paragraphs:
-            text += paragraph.text + "\n"
+            resume_text += paragraph.resume_text + "\n"
         st.write("File contents:")
         with st.expander("See Resume"):
-            st.write(text)
+            st.write(resume_text)
+    if st.button("Similarity Check"):
+            df = pd.read_csv("data/data.csv")
 
+            # Perform TF-IDF vectorization
+            vectorizer = TfidfVectorizer()
+            job_descriptions = df["Description"].fillna("")
+            tfidf_matrix = vectorizer.fit_transform(job_descriptions)
+
+            # Compute cosine similarity
+            resume_tfidf = vectorizer.transform([resume_text])
+            similarity_scores = cosine_similarity(resume_tfidf, tfidf_matrix)[0]
+
+            # Add similarity scores to the dataframe
+            df["Similarity (%)"] = similarity_scores * 100
+            df.to_csv("data/data.csv", index=False)
+            st.success("Similarity check completed and saved to data.csv")
 
 if __name__ == "__main__":
     main()
