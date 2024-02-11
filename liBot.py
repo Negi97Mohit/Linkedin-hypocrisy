@@ -322,7 +322,7 @@ def main():
         docx = Document(uploaded_file)
         resume_text = ""
         for paragraph in docx.paragraphs:
-            resume_text += paragraph.resume_text + "\n"
+            resume_text += paragraph.text + "\n"
         st.write("File contents:")
         with st.expander("See Resume"):
             st.write(resume_text)
