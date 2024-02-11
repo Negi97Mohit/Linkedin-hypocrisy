@@ -19,13 +19,14 @@ import pandas as pd
 import plotly.express as px
 import pickle 
 
+
 class LinkedInBot:
     def __init__(self, delay=5):
         if not os.path.exists("data"):
             os.makedirs("data")
         log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         logging.basicConfig(level=logging.INFO, format=log_fmt)
-        self.delay=delay
+        self.delay = delay
         logging.info("Starting driver")
         self.driver = webdriver.Chrome()
 
@@ -52,15 +53,15 @@ class LinkedInBot:
             for cookie in cookies:
                 self.driver.add_cookie(cookie)
 
-    def search_linkedin(self, keywords, location):
+    def search_linkedin(self, keywords, location, date_posted):
         """Enter keywords into the search bar"""
         logging.info("Searching jobs page")
         self.driver.get("https://www.linkedin.com/jobs/")
-        # Search based on keywords and location and hit enter
-        self.driver.get(f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}")
+        # Search based on keywords, location, and date posted and hit enter
+        self.driver.get(f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}&f_TPR={date_posted}")
         logging.info("Keyword search successful")
         time.sleep(self.delay)
-    
+
     def wait(self, t_delay=None):
         """Just easier to build this in here."""
         delay = self.delay if t_delay is None else t_delay
@@ -76,7 +77,7 @@ class LinkedInBot:
             logging.info("Clicked on job_list_item")
         except Exception as e:
             logging.error(f"Failed to click on job_list_item: {e}")
-            
+
     def get_position_data(self, job):
         """Gets the position data for a posting."""
         job_info = job.text.split('\n')
@@ -123,7 +124,7 @@ class LinkedInBot:
         """Gets the job description."""
         # Click on the job to view its details
         self.scroll_to(job)
-        
+
         try:
             description_element = self.driver.find_element(By.CLASS_NAME, "jobs-description")
             description = description_element.text
@@ -154,7 +155,7 @@ class LinkedInBot:
         logging.info("Closing session")
         self.driver.close()
 
-    def run(self, email, password, keywords, location):
+    def run(self, email, password, keywords, location, date_posted):
         if os.path.exists("data/cookies.txt"):
             self.driver.get("https://www.linkedin.com/")
             self.load_cookie("data/cookies.txt")
@@ -164,7 +165,7 @@ class LinkedInBot:
             self.save_cookie("data/cookies.txt")
 
         logging.info("Begin LinkedIn keyword search")
-        self.search_linkedin(keywords, location)
+        self.search_linkedin(keywords, location, date_posted)
         self.wait()
 
         # Open the CSV file for writing
@@ -200,18 +201,6 @@ def main():
     st.set_page_config(layout="wide") 
     st.title("LinkedIn Job Analysis")
 
-    st.subheader('Upload your resume')
-
-    uploaded_file = st.file_uploader("Choose a DOCX file", type="docx")
-    if uploaded_file:
-        docx = Document(uploaded_file)
-        text = ""
-        for paragraph in docx.paragraphs:
-            text += paragraph.text + "\n"
-        st.write("File contents:")
-        with st.expander("See Resume"):
-            st.write(text)
-
     col1, col2 = st.columns([1, 1])
     with col1:
         # Scrape LinkedIn Jobs
@@ -222,10 +211,11 @@ def main():
         password = st.text_input("Password", type="password")
         keywords = st.text_input("Keywords", value="Data Analyst")
         location = st.text_input("Location", value="New York")
+        date_posted = st.selectbox("Date Posted", ["r86400", "r604800", "r2592000"], index=1)
 
         if st.button("Scrape Jobs"):
             bot = LinkedInBot()
-            bot.run(email, password, keywords, location)
+            bot.run(email, password, keywords, location, date_posted)
             st.success("Job scraping completed!")
         with st.expander("See Scraper Code"):
             code = '''class LinkedInBot:
@@ -261,12 +251,12 @@ def main():
                 for cookie in cookies:
                     self.driver.add_cookie(cookie)
 
-        def search_linkedin(self, keywords, location):
+        def search_linkedin(self, keywords, location, date_posted):
             """Enter keywords into the search bar"""
             logging.info("Searching jobs page")
             self.driver.get("https://www.linkedin.com/jobs/")
-            # Search based on keywords and location and hit enter
-            self.driver.get(f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}")
+            # Search based on keywords, location, and date posted and hit enter
+            self.driver.get(f"https://www.linkedin.com/jobs/search/?keywords={keywords}&location={location}&f_TPR={date_posted}")
             logging.info("Keyword search successful")
             time.sleep(self.delay)
         
@@ -322,6 +312,18 @@ def main():
         fig.update_xaxes(tickangle=45)
         fig.update_layout(xaxis_title='Position', yaxis_title='Count')
         st.plotly_chart(fig)
+
+    st.subheader('After scraping upload your resume')
+
+    uploaded_file = st.file_uploader("Choose a DOCX file", type="docx")
+    if uploaded_file:
+        docx = Document(uploaded_file)
+        text = ""
+        for paragraph in docx.paragraphs:
+            text += paragraph.text + "\n"
+        st.write("File contents:")
+        with st.expander("See Resume"):
+            st.write(text)
 
 if __name__ == "__main__":
     main()
