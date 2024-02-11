@@ -18,7 +18,7 @@ import csv
 import pandas as pd
 import plotly.express as px
 import pickle 
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 class LinkedInBot:
     def __init__(self, delay=5):
@@ -28,7 +28,7 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        self.driver = webdriver.Edge()
+        self.driver = webdriver.Chrome(ChromeDriverManager().install())
 
     def login(self, email, password):
         """Go to LinkedIn and login"""
