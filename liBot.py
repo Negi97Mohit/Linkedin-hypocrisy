@@ -20,6 +20,10 @@ import csv
 import pandas as pd
 import plotly.express as px
 import pickle 
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from collections import Counter
 
 
 class LinkedInBot:
@@ -198,6 +202,14 @@ class LinkedInBot:
         logging.info("Closing DB connection.")
         self.close_session()
 
+def extract_keywords(text, num_keywords=10):
+    words = word_tokenize(text.lower())
+    stop_words = set(stopwords.words('english'))
+    filtered_words = [word for word in words if word.isalnum() and word not in stop_words]
+    word_freq = Counter(filtered_words)
+    top_keywords = word_freq.most_common(num_keywords)
+    return top_keywords
+
 def highlight_words_in_text(text, words_to_highlight):
     highlighted_text = ""
     for word in text.split():
@@ -323,7 +335,7 @@ def main():
         fig.update_layout(xaxis_title='Position', yaxis_title='Count')
         st.plotly_chart(fig)
 
-    st.subheader('After scraping upload your resume')
+    st.subheader('After scraping, upload your resume')
 
     uploaded_file = st.file_uploader("Choose a DOCX file", type="docx")
     if uploaded_file:
@@ -334,6 +346,12 @@ def main():
         st.write("File contents:")
         with st.expander("See Resume"):
             st.write(resume_text)
+        
+        keywords = extract_keywords(resume_text)
+        st.write("Top Keywords from Resume:")
+        for keyword, freq in keywords:
+            st.write(f"{keyword}: {freq}")
+
     if st.button("Similarity Check"):
             df = pd.read_csv("data/data.csv")
 
