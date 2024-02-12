@@ -351,14 +351,9 @@ def main():
     if st.button("Show CSV File"):
         df = pd.read_csv("data/data.csv")
         st.write(df)
-        
-        plt.figure(figsize=(10, 6))
-        plt.bar(df["Position"], df["Similarity (%)"])
-        plt.xlabel("Position")
-        plt.ylabel("Similarity (%)")
-        plt.title("Similarity Scores for Job Positions")
-        plt.xticks(rotation=45, ha="right")
-        st.pyplot()
-
+        fig = px.line(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
+        fig.update_traces(mode="markers+lines")
+        fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
+        st.plotly_chart(fig)
 if __name__ == "__main__":
     main()
