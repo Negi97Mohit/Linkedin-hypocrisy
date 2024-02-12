@@ -360,16 +360,15 @@ def main():
     if st.button("Show CSV File"):
         df = pd.read_csv("data/data.csv")
         st.write(df)
-        fig = px.line(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
-        fig.update_traces(mode="markers+lines")
+        fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
 
-        # Customize line colors based on similarity score
+        # Customize marker colors based on similarity score
         colors = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
-        for i, trace in enumerate(fig.data):
-            trace.line.color = colors[i]
+        fig.update_traces(marker=dict(color=colors), mode="markers")
 
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
         st.plotly_chart(fig, use_container_width=True)
+
 
 
 
