@@ -30,21 +30,8 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        self.driver = self.get_webdriver()
+        self.driver = webdriver.Chrome()
 
-    def get_webdriver(self):
-        options = webdriver.ChromeOptions()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--disable-features=NetworkService")
-        options.add_argument("--window-size=1920x1080")
-        options.add_argument("--disable-features=VizDisplayCompositor")
-        
-        driver = webdriver.Chrome(options=options)
-        return driver
-    
     def login(self, email, password):
         """Go to LinkedIn and login"""
         logging.info("Logging in")
