@@ -351,6 +351,14 @@ def main():
     if st.button("Show CSV File"):
         df = pd.read_csv("data/data.csv")
         st.write(df)
+        
+        plt.figure(figsize=(10, 6))
+        plt.bar(df["Position"], df["Similarity (%)"])
+        plt.xlabel("Position")
+        plt.ylabel("Similarity (%)")
+        plt.title("Similarity Scores for Job Positions")
+        plt.xticks(rotation=45, ha="right")
+        st.pyplot()
 
 if __name__ == "__main__":
     main()
