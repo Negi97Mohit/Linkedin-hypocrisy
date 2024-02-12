@@ -375,7 +375,7 @@ def main():
     if st.button("Show CSV File"):
         df = pd.read_csv("data/data.csv")
         st.write(df)
-        fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions",height=400)
+        fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions",height=800)
 
         # Customize marker colors based on similarity score
         colors = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
