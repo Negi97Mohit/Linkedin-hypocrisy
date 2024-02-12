@@ -198,6 +198,14 @@ class LinkedInBot:
         logging.info("Closing DB connection.")
         self.close_session()
 
+def highlight_words_in_text(text, words_to_highlight):
+    highlighted_text = ""
+    for word in text.split():
+        if word.lower() in words_to_highlight:
+            highlighted_text += f"<span style='color: green;'>{word}</span> "
+        else:
+            highlighted_text += f"<span style='color: red;'>{word}</span> "
+    return highlighted_text.strip()
 
 def main():
     st.set_page_config(layout="wide") 
@@ -356,15 +364,23 @@ def main():
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
         st.plotly_chart(fig)
 
-
-
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
         for position in selected_positions:
             st.subheader(f"Job Position: {position}")
             job_data = df[df["Position"] == position].iloc[0]
-            for column in df.columns:
-                st.markdown(f"<span style='background-color: #f4a261; padding: 2px 4px; border-radius: 4px;'>{column}</span>: {job_data[column]}", unsafe_allow_html=True)
+
+            # Highlight words in the job description and resume
+            job_description = job_data["Description"]
+            resume_text = "Your resume text here"  # Replace with actual resume text
+            words_in_resume = set(resume_text.lower().split())
+            words_in_job_description = set(job_description.lower().split())
+
+            highlighted_job_description = highlight_words_in_text(job_description, words_in_resume)
+            highlighted_resume_text = highlight_words_in_text(resume_text, words_in_job_description)
+
+            st.markdown(f"<b>Job Description:</b> {highlighted_job_description}", unsafe_allow_html=True)
+            st.markdown(f"<b>Resume Text:</b> {highlighted_resume_text}", unsafe_allow_html=True)
             st.write("---")
 
 if __name__ == "__main__":
