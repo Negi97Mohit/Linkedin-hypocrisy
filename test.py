@@ -17,7 +17,7 @@ chrome_options.add_argument('--disable-gpu')
 
 # driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
 
-driver = webdriver.Chrome(ChromeDriverManager(version="114.0.5735.90").install(), options=chrome_options)
+driver = webdriver.Chrome(ChromeDriverManager(version="121.0.6167.161").install(), options=chrome_options)
 
 url = 'https://google.com/'
 time.sleep(1000000)
