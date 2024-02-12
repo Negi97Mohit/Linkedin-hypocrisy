@@ -177,7 +177,8 @@ class LinkedInBot:
             writer.writerow(["Position", "Company", "Location", "Description", "Company Size", "Position Level", "Salary", "Application Link"])
 
             # Scrape pages
-            for page in range(2, 3):
+            page = 1
+            while True:
                 # Get the jobs list items to scroll through
                 jobs = self.driver.find_elements(By.CLASS_NAME, "occludable-update")
                 for job in jobs:
@@ -188,11 +189,15 @@ class LinkedInBot:
                         # Write the job details to the CSV file
                         writer.writerow([position, company, location, description, company_size, position_level, salary, application_link])
 
-                # Go to next page
-                next_button_xpath = f"//button[@aria-label='Page {page}']"
-                next_button = self.driver.find_element(By.XPATH, next_button_xpath)
-                next_button.click()
-                self.wait()
+                # Go to next page if it exists
+                next_button_xpath = f"//button[@aria-label='Page {page + 1}']"
+                next_button = self.driver.find_elements(By.XPATH, next_button_xpath)
+                if next_button:
+                    next_button[0].click()
+                    self.wait()
+                    page += 1
+                else:
+                    break  # No more pages to scrape
 
         logging.info("Done scraping.")
         logging.info("Closing DB connection.")
@@ -368,10 +373,6 @@ def main():
 
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
         st.plotly_chart(fig, use_container_width=True)
-
-
-
-
 
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
