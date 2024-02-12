@@ -372,15 +372,17 @@ def main():
     st.subheader("View CSV File")
 
     # Button to display CSV file
-    # Apply color assignment function to each similarity score
-    colors = [assign_color(val) for val in df["Similarity (%)"]]
+    if st.button("Show CSV File"):
+        df = pd.read_csv("data/data.csv")
+        st.write(df)
+        fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
 
-    # Create scatter plot with customized marker colors
-    fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions",
-                    color=colors)
+        # Customize marker colors based on similarity score
+        colors = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
+        fig.update_traces(marker=dict(color=colors), mode="markers")
 
-    fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
-    st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
+        st.plotly_chart(fig, use_container_width=True)
 
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
