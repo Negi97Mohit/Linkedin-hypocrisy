@@ -30,7 +30,7 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        self.driver = webdriver.Edge('msedgedriver.exe')
+        self.driver = webdriver.Chrome('./chromedriver')
 
     def login(self, email, password):
         """Go to LinkedIn and login"""
