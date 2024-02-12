@@ -364,11 +364,13 @@ def main():
         fig.update_traces(mode="markers+lines")
 
         # Customize line colors based on similarity score
-        for trace in fig.data:
-            trace.line.color = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
+        colors = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
+        for i, trace in enumerate(fig.data):
+            trace.line.color = colors[i]
 
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
         st.plotly_chart(fig, use_container_width=True)
+
 
 
 
