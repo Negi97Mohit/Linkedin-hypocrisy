@@ -362,17 +362,17 @@ def main():
     st.subheader("View CSV File")
 
     # Button to display CSV file
-    if st.button("Show CSV File"):
-        df = pd.read_csv("data/data.csv")
-        st.write(df)
-        fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
+    # Normalize similarity scores between 0 and 1
+    df['Similarity_normalized'] = (df['Similarity (%)'] - df['Similarity (%)'].min()) / (df['Similarity (%)'].max() - df['Similarity (%)'].min())
 
-        # Customize marker colors based on similarity score
-        colors = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
-        fig.update_traces(marker=dict(color=colors), mode="markers")
+    # Create a scatter plot with a gradient colormap
+    fig = px.scatter(df, x="Position", y="Similarity (%)", color="Similarity_normalized",
+                    color_continuous_scale='RdYlGn', title="Similarity Scores for Job Positions",
+                    labels={"Similarity_normalized": "Similarity (%)"},
+                    range_color=[0, 1])
 
-        fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
-        st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
+    st.plotly_chart(fig, use_container_width=True)
 
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
