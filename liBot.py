@@ -20,9 +20,6 @@ import csv
 import pandas as pd
 import plotly.express as px
 import pickle 
-from gensim.models.doc2vec import Doc2Vec
-from gensim.models.doc2vec import TaggedDocument
-import numpy as np
 
 
 class LinkedInBot:
@@ -224,14 +221,6 @@ def assign_color(similarity):
         return 'blue'
     else:
         return 'red'
-
-# Load Doc2Vec model
-model = Doc2Vec.load('cv_job_maching.model')
-
-# Define function to infer vectors for documents using Doc2Vec model
-def infer_vector(text):
-    vector = model.infer_vector(text.split())
-    return vector
     
 def main():
     st.set_page_config(layout="wide") 
@@ -368,16 +357,6 @@ def main():
             vectorizer = TfidfVectorizer()
             job_descriptions = df["Description"].fillna("")
             tfidf_matrix = vectorizer.fit_transform(job_descriptions)
-
-            # Infer vector for the resume using Doc2Vec
-            resume_vector = infer_vector(resume_text)
-
-            # Compute cosine similarity using Doc2Vec
-            job_vectors = np.array([infer_vector(desc) for desc in job_descriptions])
-            similarity_scores_doc2vec = cosine_similarity([resume_vector], job_vectors)[0]
-            
-            # Add similarity scores to the dataframe
-            df["Similarity (Doc2Vec)"] = similarity_scores_doc2vec * 100
 
             # Compute cosine similarity
             resume_tfidf = vectorizer.transform([resume_text])
