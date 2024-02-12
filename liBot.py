@@ -362,8 +362,14 @@ def main():
         st.write(df)
         fig = px.line(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
         fig.update_traces(mode="markers+lines")
+
+        # Customize line colors based on similarity score
+        for trace in fig.data:
+            trace.line.color = ['green' if val > 40 else 'red' for val in df["Similarity (%)"]]
+
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
         st.plotly_chart(fig, use_container_width=True)
+
 
 
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
