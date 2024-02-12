@@ -234,8 +234,8 @@ def main():
 
         email = st.text_input("Email")
         password = st.text_input("Password", type="password")
-        keywords = st.text_input("Keywords", value="Data Analyst")
-        location = st.text_input("Location", value="New York")
+        keywords = st.text_input("Keywords")
+        location = st.text_input("Location")
         date_posted = st.selectbox("Date Posted", ["r86400", "r604800", "r2592000"], index=1)
 
         if st.button("Scrape Jobs"):
