@@ -384,7 +384,7 @@ def main():
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
         st.plotly_chart(fig, use_container_width=True)
 
-    selected_positions = st.multiselect("Select Position", df["Position"].unique())
+
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
         for position in selected_positions:
