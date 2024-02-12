@@ -211,7 +211,17 @@ def highlight_words_in_text(text, words_to_highlight):
         else:
             highlighted_text += f"<span style='color: red;'>{word}</span> "
     return highlighted_text.strip()
-
+# Define color ranges based on similarity score
+def assign_color(similarity):
+    if similarity >= 40:
+        return 'green'
+    elif 35 <= similarity < 40:
+        return 'yellow'
+    elif 30 <= similarity < 35:
+        return 'blue'
+    else:
+        return 'red'
+    
 def main():
     st.set_page_config(layout="wide") 
     st.title("LinkedIn Job Analysis")
@@ -362,14 +372,12 @@ def main():
     st.subheader("View CSV File")
 
     # Button to display CSV file
-    # Normalize similarity scores between 0 and 1
-    df['Similarity_normalized'] = (df['Similarity (%)'] - df['Similarity (%)'].min()) / (df['Similarity (%)'].max() - df['Similarity (%)'].min())
+    # Apply color assignment function to each similarity score
+    colors = [assign_color(val) for val in df["Similarity (%)"]]
 
-    # Create a scatter plot with a gradient colormap
-    fig = px.scatter(df, x="Position", y="Similarity (%)", color="Similarity_normalized",
-                    color_continuous_scale='RdYlGn', title="Similarity Scores for Job Positions",
-                    labels={"Similarity_normalized": "Similarity (%)"},
-                    range_color=[0, 1])
+    # Create scatter plot with customized marker colors
+    fig = px.scatter(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions",
+                    color=colors)
 
     fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
     st.plotly_chart(fig, use_container_width=True)
