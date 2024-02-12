@@ -177,7 +177,7 @@ class LinkedInBot:
             writer.writerow(["Position", "Company", "Location", "Description", "Company Size", "Position Level", "Salary", "Application Link"])
 
             # Scrape pages
-            for page in range(2, 4):
+            for page in range(2, 3):
                 # Get the jobs list items to scroll through
                 jobs = self.driver.find_elements(By.CLASS_NAME, "occludable-update")
                 for job in jobs:
@@ -342,6 +342,15 @@ def main():
             df["Similarity (%)"] = similarity_scores * 100
             df.to_csv("data/data.csv", index=False)
             st.success("Similarity check completed and saved to data.csv")
+
+                # Your scraping code and other UI components here...
+
+    st.subheader("View CSV File")
+
+    # Button to display CSV file
+    if st.button("Show CSV File"):
+        df = pd.read_csv("data/data.csv")
+        st.write(df)
 
 if __name__ == "__main__":
     main()
