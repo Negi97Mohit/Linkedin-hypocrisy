@@ -363,7 +363,8 @@ def main():
         fig = px.line(df, x="Position", y="Similarity (%)", title="Similarity Scores for Job Positions")
         fig.update_traces(mode="markers+lines")
         fig.update_layout(xaxis_tickangle=-45, xaxis_title="Position", yaxis_title="Similarity (%)")
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
+
 
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
