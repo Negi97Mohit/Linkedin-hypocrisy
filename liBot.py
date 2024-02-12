@@ -357,27 +357,15 @@ def main():
         st.plotly_chart(fig)
 
 
+
     selected_positions = st.multiselect("Select Position", df["Position"].unique())
     if selected_positions:
         for position in selected_positions:
             st.subheader(f"Job Position: {position}")
             job_data = df[df["Position"] == position].iloc[0]
-            st.write(job_data)
-
-            # Display job details (e.g., company, location, etc.)
-            # (You can customize this based on your requirements)
-
-            # Display job description
-            st.write("Job Description:")
-            st.write(job_data["Description"])
-
-            # Display similarity score
-            st.write(f"Similarity (%): {job_data['Similarity (%)']}")
-
-            # Display application link (if available)
-            if not pd.isnull(job_data["Application Link"]):
-                st.write("Application Link:")
-                st.write(job_data["Application Link"])
+            for column in df.columns:
+                st.markdown(f"<span style='background-color: #f4a261; padding: 2px 4px; border-radius: 4px;'>{column}</span>: {job_data[column]}", unsafe_allow_html=True)
+            st.write("---")
 
 if __name__ == "__main__":
     main()
