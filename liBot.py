@@ -235,7 +235,14 @@ def main():
         password = st.text_input("Password", type="password")
         keywords = st.text_input("Keywords")
         location = st.text_input("Location")
-        date_posted = st.selectbox("Date Posted", ["r86400", "r604800", "r2592000"], index=1)
+        # date_posted = st.selectbox("Date Posted", ["r86400", "r604800", "r2592000"], index=1)
+        date_options = {
+            "Within the Last Day": "r86400",
+            "Within the Last Week": "r604800",
+            "Within the Last Month": "r2592000"
+        }
+        date_posted = st.selectbox("Date Posted", list(date_options.keys()), index=1)
+        date_posted = date_options[date_posted]
 
         if st.button("Scrape Jobs"):
             bot = LinkedInBot()
