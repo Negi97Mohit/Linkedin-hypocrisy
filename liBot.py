@@ -21,7 +21,9 @@ import pandas as pd
 import plotly.express as px
 import pickle 
 from selenium.webdriver.chrome.service import Service
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 class LinkedInBot:
     def __init__(self, delay=5):
         if not os.path.exists("data"):
