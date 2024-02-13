@@ -20,6 +20,7 @@ import csv
 import pandas as pd
 import plotly.express as px
 import pickle 
+from selenium.webdriver.chrome.service import Service
 
 class LinkedInBot:
     def __init__(self, delay=5):
@@ -29,7 +30,17 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        self.driver = webdriver.Chrome()
+        # Path to your chromedriver executable
+        chrome_driver_path = "C:\\Linkedin-hypocrisy\\chromedriver.exe"
+
+        # Create a service object
+        service = Service(chrome_driver_path)
+
+        # Start the service
+        service.start()
+
+        # Create a webdriver instance
+        self.driver = webdriver.Chrome(service=service)
 
     def login(self, email, password):
         """Go to LinkedIn and login"""

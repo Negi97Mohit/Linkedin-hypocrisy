@@ -10,3 +10,4 @@ webdriver-manager==3.4.2
 nltk==3.6.5
 docx==0.2.4
 gensim==4.1.2
+seleniumbase
