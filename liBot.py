@@ -21,7 +21,6 @@ import pandas as pd
 import plotly.express as px
 import pickle 
 from selenium.webdriver.chrome.service import Service
-import chromedriver_autoinstaller
 
 
 class LinkedInBot:
@@ -32,27 +31,9 @@ class LinkedInBot:
         logging.basicConfig(level=logging.INFO, format=log_fmt)
         self.delay = delay
         logging.info("Starting driver")
-        # # Path to your chromedriver executable
-        # chrome_driver_path = "C:\\Linkedin-hypocrisy\\chromedriver.exe"
-
-        # # Create a service object
-        # service = Service(chrome_driver_path)
-
-        # # Start the service
-        # service.start()
-
         # # Create a webdriver instance
-        # self.driver = webdriver.Chrome(service=service)
-        chromedriver_autoinstaller.install()
+        self.driver = webdriver.Chrome()
 
-        #Chrome options
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument("--disable-infobars")
-        chrome_options.add_argument('--disable-dev-shm-usage')
-
-        #Run chrome
-        self.driver = webdriver.Chrome(options=chrome_options)
     def login(self, email, password):
         """Go to LinkedIn and login"""
         logging.info("Logging in")
