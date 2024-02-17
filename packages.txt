@@ -1,0 +1,9 @@
+firefox-esr
+streamlit
+python-docx
+pandas
+scikit-learn
+matplotlib
+seaborn
+selenium
+plotly
