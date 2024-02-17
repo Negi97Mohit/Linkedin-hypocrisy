@@ -21,9 +21,7 @@ import pandas as pd
 import plotly.express as px
 import pickle 
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.firefox.options import Options
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.firefox.options import Options
+
 
 class LinkedInBot:
     def __init__(self, delay=5):
@@ -34,11 +32,8 @@ class LinkedInBot:
         self.delay = delay
         logging.info("Starting driver")
         # # Create a webdriver instance
-        options = Options()
-        options.headless = True
+        self.driver = webdriver.Chrome()
 
-        self.driver = webdriver.Firefox(options=options, executable_path=GeckoDriverManager().install())
-    
     def login(self, email, password):
         """Go to LinkedIn and login"""
         logging.info("Logging in")
@@ -410,5 +405,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
